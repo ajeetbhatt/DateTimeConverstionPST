@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Mvc;
 using DateTimeConversion.Models;
@@ -21,13 +19,17 @@ namespace DateTimeConversion.Controllers
             {
                 return View();
             }
+            /// <summary>
+            /// This method is used to generate xls template
+            /// </summary>
+            /// <returns>it returns xls file</returns>
             [HttpGet]
             public ActionResult GenerateTemplate()
             {
                 var dt = new DataTable("Grid");
                 dt.Columns.AddRange(new[]
                 {
-                new DataColumn("TicketId"),
+                new DataColumn("TicketId*"),
                 new DataColumn("CreatedDate"),
                 new DataColumn("ModifiedDate"),
                 new DataColumn("ClosedDate")
@@ -48,6 +50,11 @@ namespace DateTimeConversion.Controllers
                     }
                 }
             }
+            /// <summary>
+            /// This method is used to convert time to pst
+            /// </summary>
+            /// <param name="files"></param>
+            /// <returns>it sets the converted ticket to session and return reponse in json format</returns>
             [HttpPost]
             public IActionResult UploadFile(List<IFormFile> files)
             {
@@ -132,11 +139,10 @@ namespace DateTimeConversion.Controllers
                 new DataColumn("ModifiedDatePST"),
                 new DataColumn("CloseDateUtc"),
                 new DataColumn("CloseDatePST"),
-                new DataColumn("DbScript")
+                new DataColumn("Mongo Script to Run")
             });
                 foreach (var ticket in tickets)
                 {
-                    var closeDateStr = "";
                     var createdDateStr = "";
                     var modifiedDateStr = "";
                     var closeDate = "";
@@ -157,30 +163,20 @@ namespace DateTimeConversion.Controllers
                     }
                     if (ticket.CloseDateTimeUtc > DateTime.MinValue && !string.IsNullOrEmpty(ticket.ClosedDateString))
                     {
-                        createdDateStr = "\"ClosedDateTimeUtc\":new ISODate(\"" + ticket.CloseDateTimeUtc.ToString("s") + "\")";
+                        var closeDateStr = "\"ClosedDateTimeUtc\":new ISODate(\"" + ticket.CloseDateTimeUtc.ToString("s") + "\")";
                         if (!string.IsNullOrEmpty(createdDateStr) || !string.IsNullOrEmpty(modifiedDateStr))
                         {
-                            dbScript += "," + createdDateStr;
+                            dbScript += "," + closeDateStr;
                         }
                         else
                         {
-                            dbScript += createdDateStr;
+                            dbScript += closeDateStr;
                         }
                     }
 
-                    //var dbScript = "db.Tickets.updateOne({_id:" + ticket.TicketId +
-                    //               "},{$set:{\"CreatedDateTimeUtc\":new ISODate(\"" + ticket.CreatedDateTimeUtc.ToString("s") +
-                    //               "\"),\"ModifiedByDateTimeUtc\":new ISODate(\"" + ticket.ModifiedDateTimeUtc.ToString("s");
-
-                    //if (ticket.CloseDateTimeUtc > DateTime.MinValue && !string.IsNullOrEmpty(ticket.ClosedDateString))
-                    //{
-                    //    dbScript += "\"),\"ClosedDateTimeUtc\":new ISODate(\"" + ticket.CloseDateTimeUtc.ToString("s");
-                    //    closeDate = ticket.CloseDateTimeUtc.ToString("s");
-                    //}
-
+             
                     dbScript += "}})";
-                    //   dbScript += "\")}})";
-                    returnDataTable.Rows.Add(ticket.TicketId, createdDate, ticket.CreatedDateString, modifiedDate, ticket.ModifiedDateString,
+              returnDataTable.Rows.Add(ticket.TicketId, createdDate, ticket.CreatedDateString, modifiedDate, ticket.ModifiedDateString,
                         closeDate, ticket.ClosedDateString, dbScript);
                 }
                 using (var wb = new XLWorkbook())

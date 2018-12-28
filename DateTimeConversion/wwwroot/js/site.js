@@ -1,6 +1,7 @@
 ﻿var fileUpload = {
     excelImport: {
         _validFilesTypes: ["xls", "xlsx"],
+    
         processImport: function () {
             var input = document.getElementById('excelFileUpload');
             var files = input.files;
@@ -17,7 +18,8 @@
                 type: "POST",
                 success: function (response) {
                     waitingDialog.hide();
-                    $("#downloadBtn")[0].click();
+                 $("#downloadBtn")[0].click();
+             
                 },
                 error: function () {
                     waitingDialog.hide();
