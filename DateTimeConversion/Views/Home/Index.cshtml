@@ -1,0 +1,35 @@
+﻿@{
+    ViewData["Title"] = "Time Conversion";
+}
+
+
+<div class="container">
+
+    <div class="col-md-8 col-md-offset-2">
+        <form id="processImport"
+              form method="post" enctype="multipart/form-data">
+            <div class="row" style="margin-top: 2%;">
+
+                <a asp-controller="Home" asp-action="GenerateTemplate" role="button" class="btn btn-primary btn-sm">Generate Template</a>
+
+
+            </div>
+            <div class="row">
+                <label class="col-md-3 control-label" style="margin-top: 10px">Upload XLS File:</label>
+                <div class="col-md-6">
+                    <input id="excelFileUpload" class="form-control" type="file" name="files" onchange="return fileUpload.excelImport.validateFileUpload(this);" />
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 3%">
+                <button type="button" class="btn btn-success  btn-sm" id="BtnUploadExcelFile" onclick="return fileUpload.excelImport.processImport();" disabled="disabled"><span class="glyphicon glyphicon-upload" aria-hidden="true"></span> Upload</button>
+                <a asp-controller="Home" asp-action="DownloadFile" role="button" class="btn btn-primary btn-sm" id="downloadBtn" style="display: none;">Download Converted Tickets</a>
+            </div>
+        </form>
+
+
+    </div>
+
+</div>
+
+
