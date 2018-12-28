@@ -126,7 +126,7 @@ namespace DateTimeConversion.Controllers
             public ActionResult DownloadFile()
             {
                 var value = HttpContext.Session.GetString(SessionKey);
-                if (string.IsNullOrEmpty(value)) return Content("No Ticket FOund");
+                if (string.IsNullOrEmpty(value)) return Content("No Ticket Found");
                 List<Ticket> tickets = JsonConvert.DeserializeObject<List<Ticket>>(value);
                 var returnDataTable = new DataTable("Grid");
                 HttpContext.Session.Remove(SessionKey);

@@ -1,4 +1,5 @@
-﻿var fileUpload = {
+﻿
+var fileUpload = {
     excelImport: {
         _validFilesTypes: ["xls", "xlsx"],
     
