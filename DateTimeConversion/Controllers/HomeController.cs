@@ -133,12 +133,12 @@ namespace DateTimeConversion.Controllers
                 returnDataTable.Columns.AddRange(new[]
                 {
                 new DataColumn("TicketId"),
-                new DataColumn("CreatedDateUtc"),
-                new DataColumn("CreatedDatePST"),
-                new DataColumn("ModifiedDateUtc"),
-                new DataColumn("ModifiedDatePST"),
-                new DataColumn("CloseDateUtc"),
-                new DataColumn("CloseDatePST"),
+                //new DataColumn("CreatedDateUtc"),
+                //new DataColumn("CreatedDatePST"),
+                //new DataColumn("ModifiedDateUtc"),
+                //new DataColumn("ModifiedDatePST"),
+                //new DataColumn("CloseDateUtc"),
+                //new DataColumn("CloseDatePST"),
                 new DataColumn("Mongo Script to Run")
             });
                 foreach (var ticket in tickets)
@@ -176,8 +176,7 @@ namespace DateTimeConversion.Controllers
 
              
                     dbScript += "}})";
-              returnDataTable.Rows.Add(ticket.TicketId, createdDate, ticket.CreatedDateString, modifiedDate, ticket.ModifiedDateString,
-                        closeDate, ticket.ClosedDateString, dbScript);
+              returnDataTable.Rows.Add(ticket.TicketId,  dbScript);
                 }
                 using (var wb = new XLWorkbook())
                 {
@@ -187,7 +186,7 @@ namespace DateTimeConversion.Controllers
                     using (var stream = new MemoryStream())
                     {
                         wb.SaveAs(stream);
-                        var fileName = $"Tickets{DateTime.Now.Date.ToShortDateString().Replace("/", "-")}_.xlsx";
+                        var fileName = $"Tickets{DateTime.Now.Date.ToShortDateString().Replace("/", "-")}_{tickets.Count}.xlsx";
                         return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                             fileName);
                     }
